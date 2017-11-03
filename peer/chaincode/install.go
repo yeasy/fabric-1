@@ -64,6 +64,7 @@ func install(msg proto.Message, cf *ChaincodeCmdFactory) error {
 	}
 
 	prop, _, err := utils.CreateInstallProposalFromCDS(msg, creator)
+	fmt.Printf("InstallProposal=%+v", prop)
 	if err != nil {
 		return fmt.Errorf("Error creating proposal  %s: %s", chainFuncName, err)
 	}
