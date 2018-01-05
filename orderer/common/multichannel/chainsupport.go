@@ -130,3 +130,32 @@ func (cs *ChainSupport) ConfigProto() *cb.Config {
 func (cs *ChainSupport) Sequence() uint64 {
 	return cs.ConfigtxValidator().Sequence()
 }
+
+func (cs *ChainSupport) UpdateSystemChannelInfo() error {
+	logger.Infof("BCS-805: channel %s is system channel, only update name", cs.ChainID())
+
+	/* For debug
+	lc := cs.ledgerResources.ConfigEnvelope().LastUpdate
+	logger.Infof("System lastCfg=%d, lc=%v", cs.lastConfig, lc)
+	payload1 := utils.UnmarshalPayloadOrPanic(lc.Payload)
+	payload1_ch := &cb.ChannelHeader{}
+	proto.Unmarshal(payload1.Header.ChannelHeader, payload1_ch)
+	payload1_sh := &cb.SignatureHeader{}
+	proto.Unmarshal(payload1.Header.SignatureHeader, payload1_sh)
+	fmt.Printf("===payload1.channel_header=%+v\n\n", payload1_ch)
+	fmt.Printf("===payload1.signature_header=%+v\n\n", payload1_sh)
+	*/
+
+	//mspMgr := cs.ledgerResources.MSPManager()
+	//mspMgr := cs.configResources.MSPManager()
+	/*msps, err := mspMgr.GetMSPs()
+	if err != nil {
+		logger.Errorf("Error getting root CAs for channel %s (%s)", cs.ChainID(), err)
+	}*/
+	//logger.Infof("msps=%+v", msps)
+	data := cs.configResources.ChannelConfig()
+	logger.Infof("cc data=%+v", data)
+	acdata, _ := cs.configResources.ApplicationConfig()
+	logger.Infof("ac data=%+v", acdata)
+	return nil
+}

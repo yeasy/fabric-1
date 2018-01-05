@@ -144,7 +144,7 @@ func NewRegistrar(ledgerFactory blockledger.Factory, consenters map[string]conse
 		ledgerResources := r.newLedgerResources(configTx)
 		chainID := ledgerResources.ConfigtxValidator().ChainID()
 
-		if _, ok := ledgerResources.ConsortiumsConfig(); ok {
+		if _, ok := ledgerResources.ConsortiumsConfig(); ok { // system channel
 			if r.systemChannelID != "" {
 				logger.Panicf("There appear to be two system chains %s and %s", r.systemChannelID, chainID)
 			}
@@ -171,6 +171,7 @@ func NewRegistrar(ledgerFactory blockledger.Factory, consenters map[string]conse
 			r.chains[chainID] = chain
 			r.systemChannelID = chainID
 			r.systemChannel = chain
+			chain.UpdateSystemChannelInfo()
 			// We delay starting this chain, as it might try to copy and replace the chains map via newChain before the map is fully built
 			defer chain.start()
 		} else {
