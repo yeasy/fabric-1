@@ -99,6 +99,7 @@ func (s *SystemChannel) ProcessConfigUpdateMsg(envConfigUpdate *cb.Envelope) (co
 		return nil, 0, err
 	}
 
+	// doing validation here
 	newChannelConfigEnv, err := bundle.ConfigtxValidator().ProposeConfigUpdate(envConfigUpdate)
 	if err != nil {
 		return nil, 0, err
@@ -152,7 +153,7 @@ func (s *SystemChannel) ProcessConfigMsg(env *cb.Envelope) (*cb.Envelope, uint64
 	}
 
 	switch chdr.Type {
-	case int32(cb.HeaderType_CONFIG):
+	case int32(cb.HeaderType_CONFIG): //channel config
 		configEnvelope := &cb.ConfigEnvelope{}
 		if err = proto.Unmarshal(payload.Data, configEnvelope); err != nil {
 			return nil, 0, err
@@ -160,7 +161,7 @@ func (s *SystemChannel) ProcessConfigMsg(env *cb.Envelope) (*cb.Envelope, uint64
 
 		return s.StandardChannel.ProcessConfigUpdateMsg(configEnvelope.LastUpdate)
 
-	case int32(cb.HeaderType_ORDERER_TRANSACTION):
+	case int32(cb.HeaderType_ORDERER_TRANSACTION): // create new app channel
 		env, err := utils.UnmarshalEnvelope(payload.Data)
 		if err != nil {
 			return nil, 0, fmt.Errorf("Abort processing config msg because payload data unmarshalling error: %s", err)

@@ -110,13 +110,13 @@ func (bw *BlockWriter) WriteConfigBlock(block *cb.Block, encodedMetadataValue []
 	}
 
 	switch chdr.Type {
-	case int32(cb.HeaderType_ORDERER_TRANSACTION):
+	case int32(cb.HeaderType_ORDERER_TRANSACTION): // Create a new app channel
 		newChannelConfig, err := utils.UnmarshalEnvelope(payload.Data)
 		if err != nil {
 			logger.Panicf("Told to write a config block with new channel, but did not have config update embedded: %s", err)
 		}
 		bw.registrar.newChain(newChannelConfig)
-	case int32(cb.HeaderType_CONFIG):
+	case int32(cb.HeaderType_CONFIG): // Update config to existing app channel
 		configEnvelope, err := configtx.UnmarshalConfigEnvelope(payload.Data)
 		if err != nil {
 			logger.Panicf("Told to write a config block with new channel, but did not have config envelope encoded: %s", err)
